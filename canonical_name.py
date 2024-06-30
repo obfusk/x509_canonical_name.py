@@ -13,7 +13,7 @@ def canonical_name(name: Any) -> str:
         country_name="c",
         organizational_unit_name="ou",
     )
-    esc = {ord(c): f"\\{c}" for c in ",;+"}     # FIXME: incomplete
+    esc = {ord(c): f"\\{c}" for c in "\\,;+"}   # FIXME: incomplete
     data = []
     for rdn in reversed(name.chosen):
         pairs = []
