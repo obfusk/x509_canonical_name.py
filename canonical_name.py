@@ -16,7 +16,7 @@ def canonical_name(name: Any) -> str:
 # https://docs.oracle.com/en/java/javase/11/docs/api/java.base/javax/security/auth/x500/X500Principal.html#getName(java.lang.String)
 # https://android.googlesource.com/platform/libcore/+/refs/heads/android14-release/ojluni/src/main/java/sun/security/x509/RDN.java#481
 # https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/sun/security/x509/RDN.java#L456
-# FIXME: leading zeroes? BER? anything missing?
+# FIXME: leading zeroes? anything missing?
 def comparison_name(name: Any, android: bool = False) -> List[List[Tuple[int, str, str]]]:
     def key(pair: Tuple[int, str, str]) -> Tuple[int, Union[str, List[int]], str]:
         o, t, v = pair
@@ -46,7 +46,6 @@ def comparison_name(name: Any, android: bool = False) -> List[List[Tuple[int, st
             else:
                 o, t = 1, tvt.dotted
             if not (isinstance(tvv, DS) and isinstance(tvv.chosen, (U8, PS))):
-                # FIXME: should use BER
                 v = "#" + binascii.hexlify(tvv.dump()).decode()
             else:
                 v = tvv.native or ""
