@@ -1,0 +1,5 @@
+oid_section = myoids
+
+[ myoids ]
+custom1=0.1.2.3
+custom2=0.1.11.3
