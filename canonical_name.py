@@ -2,7 +2,7 @@ import re
 import sys
 import unicodedata
 
-from typing import Any
+from typing import Any, List, Tuple
 
 from asn1crypto import x509                     # type: ignore[import-untyped]
 
@@ -26,8 +26,22 @@ def canonical_name(name: Any) -> str:
     return ",".join("+".join(pairs) for pairs in data)
 
 
+def comparison_name(name: Any) -> List[List[Tuple[str, str]]]:
+    data = []
+    for rdn in reversed(name.chosen):
+        pairs = []
+        for type_val in rdn:
+            t = type_val['type'].native
+            v = re.sub(r"\s+", " ", type_val['value'].native).strip()
+            v = unicodedata.normalize("NFKD", v.upper().lower())
+            pairs.append((t, v))
+        data.append(sorted(pairs))
+    return data
+
+
 d = open(sys.argv[1], "rb").read()
 c = x509.Certificate.load(d)
 n = c["tbs_certificate"]["issuer"]
 
 print(canonical_name(n))
+# print(comparison_name(n))
