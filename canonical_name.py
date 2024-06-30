@@ -43,16 +43,16 @@ def comparison_name(name: Any, android: bool = False) -> List[List[Tuple[int, st
     data = []
     for rdn in reversed(name.chosen):
         avas = []
-        for type_val in rdn:
-            tvt, tvv = type_val["type"], type_val["value"]
-            if tvt.dotted in oids:
-                o, t = 0, oids[tvt.dotted][1]   # order standard before OID
+        for ava in rdn:
+            at, av = ava["type"], ava["value"]
+            if at.dotted in oids:
+                o, t = 0, oids[at.dotted][1]    # order standard before OID
             else:
-                o, t = 1, tvt.dotted
-            if not (isinstance(tvv, DS) and isinstance(tvv.chosen, (U8, PS))):
-                v = "#" + binascii.hexlify(tvv.dump()).decode()
+                o, t = 1, at.dotted
+            if not (isinstance(av, DS) and isinstance(av.chosen, (U8, PS))):
+                v = "#" + binascii.hexlify(av.dump()).decode()
             else:
-                v = tvv.native or ""
+                v = av.native or ""
                 v = v.translate(esc)
                 if v.startswith("#"):
                     v = "\\" + v
