@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
+# sp=$'  　　  '
+# sp=$' \t\n\r\f\v'
+sp=$''
 control1="$(python3 control1.py)"
 control2="$(python3 control2.py)"
-subjs1=( "/CN=${control1}foo" "/CN=foo${control1}" "/CN=foo${control1}bar" )
-subjs2=( "/CN=${control2}foo" "/CN=foo${control2}" "/CN=foo${control2}bar" )
+subjs1=( "/CN=${sp}${control1}${sp}foo${sp}" "/CN=${sp}foo${sp}${control1}${sp}" "/CN=${sp}foo${sp}${control1}${sp}bar${sp}" )
+subjs2=( "/CN=${sp}${control2}${sp}foo${sp}" "/CN=${sp}foo${sp}${control2}${sp}" "/CN=${sp}foo${sp}${control2}${sp}bar${sp}" )
 numbs1=( a b c )
 numbs2=( d e f )
 genkey() {

@@ -69,13 +69,14 @@ def comparison_name(name: Any, android: bool = False) -> List[List[Tuple[int, st
         "0.9.2342.19200300.100.1.25": ("domain_component", "dc"),
     }
     esc = {ord(c): f"\\{c}" for c in ",+<>;\"\\"}
+    cws = "".join(chr(i) for i in range(32 + 1))    # control (but not esc) and whitespace
     data = []
     for rdn in reversed(name.chosen):
         avas = []
         for ava in rdn:
             at, av = ava["type"], ava["value"]
             if at.dotted in oids:
-                o, t = 0, oids[at.dotted][1]    # order standard before OID
+                o, t = 0, oids[at.dotted][1]        # order standard before OID
             else:
                 o, t = 1, at.dotted
             if not (isinstance(av, DS) and isinstance(av.chosen, (U8, PS))):
@@ -84,7 +85,7 @@ def comparison_name(name: Any, android: bool = False) -> List[List[Tuple[int, st
                 v = (av.native or "").translate(esc)
                 if v.startswith("#"):
                     v = "\\" + v
-                v = unicodedata.normalize("NFKD", re.sub(r" +", " ", v).strip().upper().lower())
+                v = unicodedata.normalize("NFKD", re.sub(r" +", " ", v).strip(cws).upper().lower())
             avas.append((o, t, v))
         data.append(sorted(avas, key=key))
     return data
