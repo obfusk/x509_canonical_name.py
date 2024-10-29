@@ -33,7 +33,6 @@ NB: the Java documentation is incorrect with respect to whitespace handling.
 
 import binascii
 import re
-import sys
 import unicodedata
 
 from typing import List, Tuple, Union
@@ -161,7 +160,7 @@ def x509_ordered_name(name: x509.Name, *,           # type: ignore[no-any-unimpo
                 o, t = 0, oids[at.dotted][1]        # order standard before OID
             else:
                 o, t = 1, at.dotted
-            if not (isinstance(av, DS) and isinstance(av.chosen, (U8, PS))):
+            if o or not (isinstance(av, DS) and isinstance(av.chosen, (U8, PS))):
                 rv = nv = "#" + binascii.hexlify(av.dump()).decode()
             else:
                 rv = (av.native or "").translate(esc)
@@ -174,6 +173,8 @@ def x509_ordered_name(name: x509.Name, *,           # type: ignore[no-any-unimpo
 
 
 if __name__ == "__main__":
-    with open(sys.argv[1], "rb") as fh:
-        cert = x509.Certificate.load(fh.read())
-    print(x509_canonical_name(cert["tbs_certificate"]["issuer"]))
+    import sys
+    for certfile in sys.argv[1:]:
+        with open(certfile, "rb") as fh:
+            cert = x509.Certificate.load(fh.read())
+        print(x509_canonical_name(cert["tbs_certificate"]["issuer"]))
