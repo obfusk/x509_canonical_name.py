@@ -69,8 +69,9 @@ def x509_ordered_name(name: x509.Name, *,           # type: ignore[no-any-unimpo
     string value pre-normalisation.
 
     https://docs.oracle.com/en/java/javase/21/docs/api/java.base/javax/security/auth/x500/X500Principal.html#getName(java.lang.String)
-    https://android.googlesource.com/platform/libcore/+/refs/heads/android14-release/ojluni/src/main/java/sun/security/x509/RDN.java#481
+    https://github.com/openjdk/jdk/blob/jdk-21%2B35/src/java.base/share/classes/sun/security/x509/AVA.java#L805
     https://github.com/openjdk/jdk/blob/jdk-21%2B35/src/java.base/share/classes/sun/security/x509/RDN.java#L472
+    https://android.googlesource.com/platform/libcore/+/refs/heads/android14-release/ojluni/src/main/java/sun/security/x509/RDN.java#481
 
     '/OU=a/CN= Foo+CN=bar /OU=b/C=xx'
     >>> data = b'0A1\n0\x08\x06\x03U\x04\x0b\x0c\x01a1\x1a0\x0b\x06\x03U\x04\x03\x0c\x04 Foo0\x0b\x06\x03U\x04\x03\x0c\x04bar 1\n0\x08\x06\x03U\x04\x0b\x0c\x01b1\x0b0\t\x06\x03U\x04\x06\x13\x02xx'
