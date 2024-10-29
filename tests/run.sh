@@ -11,11 +11,11 @@ for n in 1 2 3 4; do
   echo "n=$n"
   for x in cert-rsa-"$n"*.der; do
     echo "file=$x"
-    j="$(java javacert.java "$x" | xxd -c0 -ps)"
+    j="$(java x509_canonical_name.java "$x" | xxd -c0 -ps)"
     p="$(python3 x509_canonical_name.py "$x" | xxd -c0 -ps)"
     if [ "$j" = "$p" ]; then echo OK; else echo DIFFER; fi
     if [ "$1" = -v ]; then
-      java javacert.java "$x" | xxd -c32
+      java x509_canonical_name.java "$x" | xxd -c32
       python3 x509_canonical_name.py "$x" | xxd -c32
       printf '%s\n%s\n' "$j" "$p" | uniq -c
     fi
