@@ -66,7 +66,7 @@ def x509_friendly_name(name: x509.Name, *,          # type: ignore[no-any-unimpo
     'CN= Foo  Bar, O=My\\x00Org\\x08'
 
     """
-    return ", ".join("+".join(f"{t.upper()}={repr(rv)[1:-1]}" for _, t, _, rv in avas)
+    return ", ".join("+".join(f"{t.upper()}={repr(ev)[1:-1]}" for _, t, _, ev in avas)
                      for avas in x509_ordered_name(name, android=android))
 
 
@@ -90,10 +90,13 @@ def x509_ordered_name(name: x509.Name, *,           # type: ignore[no-any-unimpo
     including non-canonical pre-normalised string values).
 
     Returns a list of RDNs which are a list of AVAs which are a (oid, type,
-    normalised_value, raw_value) tuple, where oid is 0 for standard names and 1
+    normalised_value, esc_value) tuple, where oid is 0 for standard names and 1
     for dotted OIDs, type is the standard name or dotted OID, normalised_value
-    is the normalised string representation of the value, and raw_value is the
-    string value pre-normalisation.
+    is the normalised string representation of the value, and esc_value is the
+    string value before normalisation (but after escaping).
+
+    NB: control characters are not escaped, only characters in ",+<>;\"\\" and
+    "#" at the start (before "whitespace" trimming) are.
 
     https://docs.oracle.com/en/java/javase/21/docs/api/java.base/javax/security/auth/x500/X500Principal.html#getName(java.lang.String)
     https://github.com/openjdk/jdk/blob/jdk-21%2B35/src/java.base/share/classes/sun/security/x509/AVA.java#L805
@@ -161,13 +164,13 @@ def x509_ordered_name(name: x509.Name, *,           # type: ignore[no-any-unimpo
             else:
                 o, t = 1, at.dotted
             if o or not (isinstance(av, DS) and isinstance(av.chosen, (U8, PS))):
-                rv = nv = "#" + binascii.hexlify(av.dump()).decode()
+                ev = nv = "#" + binascii.hexlify(av.dump()).decode()
             else:
-                rv = (av.native or "").translate(esc)
-                if rv.startswith("#"):
-                    rv = "\\" + rv
-                nv = unicodedata.normalize("NFKD", re.sub(r" +", " ", rv).strip(cws).upper().lower())
-            avas.append((o, t, nv, rv))
+                ev = (av.native or "").translate(esc)
+                if ev.startswith("#"):
+                    ev = "\\" + ev
+                nv = unicodedata.normalize("NFKD", re.sub(r" +", " ", ev).strip(cws).upper().lower())
+            avas.append((o, t, nv, ev))
         data.append(sorted(avas, key=key))
     return data
 
