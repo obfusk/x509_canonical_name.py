@@ -1,9 +1,9 @@
 # x509_canonical_name.py
 
 Python implementation of the Java algorithm for an RFC 2253 conformant string
-representation of an X.509 (X.500) distinguished name with additional
-canonicalisations (as used to compare distinguished names in X.509 certificates
-for equality in e.g. `apksigner` and Android).
+representation of an X.500 distinguished name with additional canonicalisations
+(as used to compare distinguished names in X.509 certificates for equality in
+e.g. `apksigner` and Android).
 
 See [the Java documentation](https://docs.oracle.com/en/java/javase/21/docs/api/java.base/javax/security/auth/x500/X500Principal.html#getName%28java.lang.String%29).
 
