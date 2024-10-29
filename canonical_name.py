@@ -94,9 +94,9 @@ def x509_ordered_name(name: x509.Name, *,           # type: ignore[no-any-unimpo
     >>> x509_ordered_name(name, android=True)
     [[(0, 'cn', '\\#y', '\\#y')], [(0, 'cn', '#\\,\\;\\+\\\\', ' #\\,\\;\\+\\\\'), (0, 'cn', 'bar', 'bar  '), (0, 'cn', 'foo', 'foo  '), (0, 'cn', 'ii', 'Ii   '), (0, 'cn', 'i\u0307i', 'İı '), (0, 'cn', 'zz', 'zz'), (0, 'cn', 'ßss', '\u1e9eß')], [(0, 'cn', 'x \t\t 猫x', ' x \t\t 猫x')], [(1, '1.2.840.113549.1.9.1', '#1603784079', '#1603784079')], [(0, 'o', 'org', 'org'), (1, '0.1.2.3', '#0c023337', '#0c023337'), (1, '0.1.11.3', '#0c023432', '#0c023432')]]
 
-    >>> control = "".join(chr(c) for c in list(range(0x00, 0x1F + 1)))
+    >>> control = "".join(chr(i) for i in range(32))    # no space
     >>> f = lambda cn: x509_canonical_name(x509.Name.build({"common_name": cn}))
-    >>> f(f"{control}foo") == "cn=foo" == f(f"foo{control}")
+    >>> f(f"{control}foo") == "cn=foo" == f(f"foo{control} ")
     True
     >>> f(f"\tfoo{control}bar  ")
     'cn=foo\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1fbar'
